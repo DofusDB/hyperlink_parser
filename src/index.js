@@ -1,9 +1,9 @@
 const LEFT_SEPARATOR = '{';
 const RIGHT_SEPARATOR = '}';
-const SEPARATOR = ',';
+const SEPARATOR = '::';
 
 // Dofus HyperLink parser
-export default function parser(string, leftSeparator = LEFT_SEPARATOR, rightSeparator = RIGHT_SEPARATOR, separator = SEPARATOR) {
+module.exports = function parser(string, leftSeparator = LEFT_SEPARATOR, rightSeparator = RIGHT_SEPARATOR, separator = SEPARATOR) {
   if (!string) {
     return null;
   }
@@ -19,12 +19,22 @@ export default function parser(string, leftSeparator = LEFT_SEPARATOR, rightSepa
       break;
     }
 
-    parsedString.push(string.substring(index, leftIndex));
-    const data = string.substring(leftIndex + 1, rightIndex).split(separator);
+    const leftPart = string.substring(index, leftIndex);
+    if (leftPart) {
+      parsedString.push(leftPart);
+    }
+    const middlePart = string.substring(leftIndex + 1, rightIndex);
+    const linkPart = middlePart.split(separator);
+    const data = linkPart[0].split(',');
 
     const protocol = data[0];
     const params = data.slice(1);
-    parsedString.push({ protocol, params });
+
+    let text = '';
+    if (linkPart.length === 2) {
+      text = linkPart[1];
+    }
+    parsedString.push({ protocol, params, text });
 
     index = rightIndex + 1;
   }
