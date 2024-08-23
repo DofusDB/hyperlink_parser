@@ -1,5 +1,5 @@
-const LEFT_SEPARATOR = '{';
-const RIGHT_SEPARATOR = '}';
+const LEFT_SEPARATOR = '{{';
+const RIGHT_SEPARATOR = '}}';
 const SEPARATOR = '::';
 
 // Dofus HyperLink parser
@@ -23,7 +23,7 @@ module.exports = function parser(string, leftSeparator = LEFT_SEPARATOR, rightSe
     if (leftPart) {
       parsedString.push(leftPart);
     }
-    const middlePart = string.substring(leftIndex + 1, rightIndex);
+    const middlePart = string.substring(leftIndex + this.LEFT_SEPARATOR.length, rightIndex);
     const linkPart = middlePart.split(separator);
     const data = linkPart[0].split(',');
 
@@ -36,7 +36,7 @@ module.exports = function parser(string, leftSeparator = LEFT_SEPARATOR, rightSe
     }
     parsedString.push({ protocol, params, text });
 
-    index = rightIndex + 1;
+    index = rightIndex + this.RIGHT_SEPARATOR.length;
   }
 
   if (index < string.length) {
